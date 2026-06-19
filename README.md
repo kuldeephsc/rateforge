@@ -1,4 +1,4 @@
-# Sentinel
+# RateForge | Event-Driven Rate Limiting & Traffic Governance Platform
 
 A single-node rate-limiting & scheduling service in Go: per-client token
 buckets with an event-driven min-heap refill scheduler, a separate admin
@@ -20,9 +20,9 @@ supply-chain surface to audit, and one less thing that can break a build.
 ## Project layout
 
 ```
-sentinel/
+RateForge | Event-Driven Rate Limiting & Traffic Governance Platform/
 ├── cmd/
-│   ├── sentinel/        # main service binary
+│   ├── RateForge | Event-Driven Rate Limiting & Traffic Governance Platform/        # main service binary
 │   └── simulator/       # traffic-generator CLI (FR6)
 ├── internal/
 │   ├── bucket/          # token bucket: lock-free hot path (atomics + CAS)
@@ -36,7 +36,7 @@ sentinel/
 │   ├── metrics/           # zero-dependency Prometheus-format registry
 │   ├── config/            # config schema + hand-rolled YAML-subset loader
 │   └── server/             # client API, admin API, shared middleware
-├── configs/sentinel.yaml
+├── configs/RateForge | Event-Driven Rate Limiting & Traffic Governance Platform.yaml
 ├── scripts/gen_certs.sh    # local dev PKI for TLS/mTLS testing
 ├── Dockerfile               # distroless, non-root (B6)
 └── Makefile
@@ -55,10 +55,10 @@ make certs
 make build
 
 # 3. run the service
-./bin/sentinel --config configs/sentinel.yaml
+./bin/RateForge | Event-Driven Rate Limiting & Traffic Governance Platform --config configs/RateForge | Event-Driven Rate Limiting & Traffic Governance Platform.yaml
 ```
 
-Without certs in `configs/sentinel.yaml`'s `server.tls`/`server.admin_tls`
+Without certs in `configs/RateForge | Event-Driven Rate Limiting & Traffic Governance Platform.yaml`'s `server.tls`/`server.admin_tls`
 sections, both APIs fall back to plain HTTP and log a loud startup
 warning — convenient for local iteration, never for production (FR9).
 
@@ -80,7 +80,7 @@ Build & run in Docker (B6):
 
 ```bash
 make docker
-docker run -p 8080:8080 -p 9090:9090 -p 9100:9100 sentinel:latest
+docker run -p 8080:8080 -p 9090:9090 -p 9100:9100 RateForge | Event-Driven Rate Limiting & Traffic Governance Platform:latest
 ```
 
 ## API
@@ -121,12 +121,12 @@ curl -i -X PUT https://localhost:9090/admin/v1/clients/abc123/config \
 ```
 
 To generate an `admin_token_hash`/`admin_token_salt` pair for
-`configs/sentinel.yaml`:
+`configs/RateForge | Event-Driven Rate Limiting & Traffic Governance Platform.yaml`:
 
 ```go
 package main
 
-import "sentinel/internal/security"
+import "RateForge | Event-Driven Rate Limiting & Traffic Governance Platform/internal/security"
 
 func main() {
     salt := "some-random-salt"
@@ -138,10 +138,10 @@ func main() {
 ### Metrics (`metrics.port`, default 9100)
 
 `GET /metrics` in Prometheus text exposition format:
-`sentinel_requests_total{decision="allow|reject|blocked"}`,
-`sentinel_request_latency_seconds`, `sentinel_active_clients`,
-`sentinel_scheduler_refills_total`, `sentinel_scheduler_heap_size`,
-`sentinel_evictions_total`, `sentinel_admin_changes_total{action=...}`.
+`RateForge | Event-Driven Rate Limiting & Traffic Governance Platform_requests_total{decision="allow|reject|blocked"}`,
+`RateForge | Event-Driven Rate Limiting & Traffic Governance Platform_request_latency_seconds`, `RateForge | Event-Driven Rate Limiting & Traffic Governance Platform_active_clients`,
+`RateForge | Event-Driven Rate Limiting & Traffic Governance Platform_scheduler_refills_total`, `RateForge | Event-Driven Rate Limiting & Traffic Governance Platform_scheduler_heap_size`,
+`RateForge | Event-Driven Rate Limiting & Traffic Governance Platform_evictions_total`, `RateForge | Event-Driven Rate Limiting & Traffic Governance Platform_admin_changes_total{action=...}`.
 
 ## Deviations from design.md
 
@@ -154,7 +154,7 @@ rather than left unimplemented:
 
 | design.md said | This build uses | Why / where documented |
 |---|---|---|
-| `gopkg.in/yaml.v3` for config | A ~150-line hand-rolled parser for the indentation-based subset of YAML `configs/sentinel.yaml` actually uses (nested sections, scalars, comments, quoting — no flow style/anchors/lists) | `internal/config/config.go` package doc |
+| `gopkg.in/yaml.v3` for config | A ~150-line hand-rolled parser for the indentation-based subset of YAML `configs/RateForge | Event-Driven Rate Limiting & Traffic Governance Platform.yaml` actually uses (nested sections, scalars, comments, quoting — no flow style/anchors/lists) | `internal/config/config.go` package doc |
 | `github.com/prometheus/client_golang` for metrics | A hand-rolled registry emitting the same Prometheus text exposition format (counters, gauges, fixed-bucket histograms) | `internal/metrics/metrics.go` package doc |
 | bcrypt for admin token storage (D8) | Salted SHA-256 + `crypto/subtle` constant-time comparison | `internal/security/sanitize.go`, `HashToken` doc comment — explicitly flagged as appropriate *only* because admin bearer tokens are long random secrets, not human passwords; swap to bcrypt/argon2id (`golang.org/x/crypto`) if that assumption ever changes |
 
