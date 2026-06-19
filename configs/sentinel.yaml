@@ -1,0 +1,74 @@
+# Sentinel default configuration.
+#
+# NOTE: this file is parsed by internal/config's small hand-rolled
+# YAML-subset parser (see that file's doc comment for exactly what's
+# supported): nested "key:" sections, "key: value" scalars, '#' comments,
+# and optionally-quoted strings. Spaces only for indentation — no tabs,
+# no lists/flow-style/anchors.
+
+server:
+  client_port: 8080
+  admin_port: 9090
+  tls:
+    cert_file: "certs/server.crt"
+    key_file: "certs/server.key"
+  admin_tls:
+    cert_file: "certs/admin.crt"
+    key_file: "certs/admin.key"
+    client_ca_file: "certs/admin-ca.crt"
+
+defaults:
+  max_tokens: 100
+  refill_rate: 10
+  refill_interval: 1s
+  tokens_per_request: 1
+  sliding_window:
+    enabled: false
+    window_duration: 60s
+    max_requests: 100
+    buffer_size: 200
+
+limits:
+  max_clients: 100000
+  max_api_key_length: 128
+  min_refill_interval: 10ms
+  max_refill_interval: 1h
+
+security:
+  admin_token_hash: ""
+  admin_token_salt: ""
+  identity_mode: api_key_with_ip_fallback
+  trust_proxy_headers: false
+  enable_ip_secondary_limit: true
+  ip_max_tokens: 500
+  ip_refill_rate: 50
+  ip_refill_interval: 1s
+
+logging:
+  level: info
+  audit_file: logs/audit.json
+  request_sample_rate: 0.01
+
+metrics:
+  enabled: true
+  port: 9100
+
+fairness:
+  enabled: false
+  default_weight: 1.0
+
+global:
+  enabled: false
+  max_tokens: 5000
+  refill_rate: 1000
+  refill_interval: 1s
+
+tiers:
+  expensive:
+    max_tokens: 20
+    refill_rate: 2
+    refill_interval: 1s
+  burst:
+    max_tokens: 500
+    refill_rate: 100
+    refill_interval: 1s

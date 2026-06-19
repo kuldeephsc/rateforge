@@ -1,0 +1,5 @@
+/bin/
+/certs/
+/logs/
+*.test
+*.out
