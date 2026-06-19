@@ -1,4 +1,4 @@
-# Sentinel — Rate Limiting & Scheduling Service
+# RateForge | Event-Driven Rate Limiting & Traffic Governance Platform
 
 > **Language:** Go 1.22+ | **Status:** FINAL | **Date:** 2026-02-10
 
